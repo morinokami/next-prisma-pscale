@@ -5,6 +5,20 @@ import Head from "next/head";
 import AddContactForm from "../components/AddContactForm";
 import ContactCard from "../components/ContactCard";
 import { Contact } from "../types";
+import prisma from "../lib/prisma";
+
+const saveContact = async (contact: Contact) => {
+  const response = await fetch("/api/contacts", {
+    method: "POST",
+    body: JSON.stringify(contact),
+  });
+
+  if (!response.ok) {
+    throw new Error(response.statusText);
+  }
+
+  return await response.json();
+};
 
 interface Props {
   initialContacts: Contact[];
@@ -30,6 +44,7 @@ const Index: NextPage<Props> = ({ initialContacts }) => {
           <AddContactForm
             onSubmit={async (data, e) => {
               try {
+                await saveContact(data);
                 setContacts([...contacts, data]);
                 e?.target.reset();
               } catch (err) {
@@ -54,17 +69,10 @@ const Index: NextPage<Props> = ({ initialContacts }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async () => {
+  const contacts = await prisma.contact.findMany();
   return {
     props: {
-      initialContacts: [
-        {
-          id: "1",
-          firstName: "Shinya",
-          lastName: "Fujino",
-          email: "shf0811@gmail.com",
-          avatar: "https://github.com/morinokami.png",
-        },
-      ],
+      initialContacts: contacts,
     },
   };
 };
