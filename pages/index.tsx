@@ -1,13 +1,11 @@
 import type { GetServerSideProps, NextPage } from "next";
 import { useState } from "react";
 import Head from "next/head";
-import { PrismaClient } from "@prisma/client";
 
 import AddContactForm from "../components/AddContactForm";
 import ContactCard from "../components/ContactCard";
 import { Contact } from "../types";
-
-const prisma = new PrismaClient();
+import prisma from "../lib/prisma";
 
 const saveContact = async (contact: Contact) => {
   const response = await fetch("/api/contacts", {

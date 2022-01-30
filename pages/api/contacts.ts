@@ -1,8 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
 
-// TODO: Define the Prisma client as a singleton
-const prisma = new PrismaClient();
+import prisma from "../../lib/prisma";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== "POST") {
